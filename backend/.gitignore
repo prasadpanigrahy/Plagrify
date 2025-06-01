@@ -1,7 +1,31 @@
+# Python virtual environment
 venv/
+.venv/
+
+# Python bytecode
 __pycache__/
-*.pyc
-instance/
+*.py[cod]
+*$py.class
+
+# Environment and config
 .env
+*.env
+
+# Flask instance folder (if used)
+instance/
+
+# SQLite database file
 *.sqlite3
+
+# Uploads and generated files
 uploads/
+reports/
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE/editor folders
+.vscode/
+.idea/
