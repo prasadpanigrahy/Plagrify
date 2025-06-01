@@ -26,7 +26,7 @@ def login():
 
     return render_template('auth/login.html')
 
-@auth_bp.route('/logout')
+@auth_bp.route('/logout', endpoint='auth_logout')
 def logout():
     session.pop('user_id', None)
     session.pop('is_admin', None)  # <-- clean this up
