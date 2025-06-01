@@ -1,4 +1,4 @@
-from database import db
+from .database import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -6,6 +6,7 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     banned = db.Column(db.Boolean, default=False)
     is_admin = db.Column(db.Boolean, default=False)   # <-- this should exist
+    role = db.Column(db.String(10), default='user')  # 'admin' or 'user'
 
 
 class Upload(db.Model):

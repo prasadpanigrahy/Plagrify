@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import session, redirect, url_for, abort
-from models import User
+from .models import User
 
 def admin_required(f):
     @wraps(f)

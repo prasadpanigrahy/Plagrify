@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, session, redirect, request, url_for
-from models import Upload, User
-from database import db
+from flask import Blueprint, render_template, session, redirect, request, url_for, abort
+from .models import Upload, User
+from .database import db
 from datetime import datetime
-from decorators import admin_required  # make sure this is defined as shown earlier
+from .decorators import admin_required  # make sure this is defined as shown earlier
 
-admin_bp = Blueprint('admin', __name__)
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin_bp.route('/admin', methods=['GET'])
 @admin_required   # <---- restrict access here
@@ -46,7 +46,7 @@ def admin_dashboard():
             pass
 
     uploads = query.order_by(Upload.created_at.desc()).all()
-    return render_template('admin.html', uploads=uploads, users=users, all_users=users)
+    return render_template('admin/dashboard.html', uploads=uploads, users=users, all_users=users)
 
 
 @admin_bp.route('/admin/ban/<int:user_id>', methods=['POST'])

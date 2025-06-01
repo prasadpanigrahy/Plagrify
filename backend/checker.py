@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, session, redirect, send_file, abort
 import os
-from models import Upload, User
-from database import db
+from .models import Upload, User
+from .database import db
 from difflib import SequenceMatcher
 from datetime import datetime
 from werkzeug.utils import secure_filename

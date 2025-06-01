@@ -1,6 +1,6 @@
-from app import app
-from models import User
-from database import db
+from .app import app
+from .models import User
+from .database import db
 
 def make_admin(username):
     with app.app_context():
