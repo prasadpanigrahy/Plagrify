@@ -26,17 +26,6 @@ content %}
   <p>Processing files, please wait...</p>
 </div>
 
-<script>
-  const form = document.querySelector("form");
-  const spinner = document.getElementById("loadingSpinner");
-  const submitBtn = form.querySelector('button[type="submit"]');
-
-  form.addEventListener("submit", () => {
-    submitBtn.disabled = true; // Disable button to prevent double submit
-    spinner.classList.remove("d-none"); // Show spinner
-  });
-</script>
-
 {% if error %}
 <div class="alert alert-danger mt-3">{{ error }}</div>
 {% endif %} {% if scores %}
@@ -100,5 +89,4 @@ content %}
     {% endif %}
   });
 </script>
-
 {% endblock %}

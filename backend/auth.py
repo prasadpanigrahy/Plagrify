@@ -1,49 +1,57 @@
-from flask import Blueprint, render_template, request, redirect, session
-from .models import User
-from .database import db
+from flask import Blueprint, render_template, request, redirect, session, url_for, flash
+from models import User
+from database import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/')
 def home():
-    return redirect('/login')
+    return redirect(url_for('auth.login'))
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
+        username = request.form['username']
         password = request.form['password']
 
-        user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id
-            session['is_admin'] = user.is_admin  # <-- 🔥 add this line
-            return redirect(url_for('checker.dashboard'))  # or wherever you redirect after login
+        user = User.query.filter_by(username=username).first()
+
+        if user:
+            if user.banned:
+                flash('Your account has been banned. Please contact support.', 'danger')
+            elif check_password_hash(user.password, password):
+                session['user_id'] = user.id
+                flash('Login successful!', 'success')
+                return redirect(url_for('checker.dashboard'))
+
+            else:
+                flash('Invalid credentials. Please try again.', 'danger')
         else:
-            flash('Invalid email or password', 'danger')
-            return redirect(url_for('auth.login'))
-
-    return render_template('auth/login.html')
-
-@auth_bp.route('/logout', endpoint='auth_logout')
-def logout():
-    session.pop('user_id', None)
-    session.pop('is_admin', None)  # <-- clean this up
-    return redirect(url_for('auth.login'))
-
+            flash('User not found.', 'warning')
+            
+    return render_template('login.html')
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        u = User(username=request.form['username'],
-                 password=generate_password_hash(request.form['password']))
-        db.session.add(u)
+        username = request.form['username']
+        password = request.form['password']
+
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists. Please log in.', 'danger')
+            return redirect(url_for('auth.login'))
+
+        new_user = User(username=username, password=generate_password_hash(password))
+        db.session.add(new_user)
         db.session.commit()
-        return redirect('/login')
+        flash('Registration successful! You can now log in.', 'success')
+        return redirect(url_for('auth.login'))
+
     return render_template('register.html')
 
 @auth_bp.route('/logout')
 def logout():
     session.pop('user_id', None)
-    return redirect('/login')
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('auth.login'))
